@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/WiFiP2p2.iml" filepath="$PROJECT_DIR$/WiFiP2p2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WiFiP2p.iml" filepath="$PROJECT_DIR$/WiFiP2p.iml" />
+      <module fileurl="file://C:\Users\SHENG.X\Desktop\WiFiP2p\WiFiP2p2.iml" filepath="C:\Users\SHENG.X\Desktop\WiFiP2p\WiFiP2p2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

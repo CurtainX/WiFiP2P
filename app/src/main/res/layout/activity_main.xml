@@ -54,6 +54,34 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="server?" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/controllerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:orientation="vertical">
+
+        <SeekBar
+            android:id="@+id/skbR"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:max="255" />
+
+        <SeekBar
+            android:id="@+id/skbG"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:max="255" />
+
+        <SeekBar
+            android:id="@+id/skbB"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:max="255" />
+
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

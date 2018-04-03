@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     DeviceListAdapter deviceListAdapter;
     private String TAG="Log2";
-    static String serverout;
     WiFiDirectBroadcastReceiver wiFiDirectBroadcastReceiver;
+    SeekBar seekBarR,seekBarG,seekBarB;
 
-    
+    LinearLayout controllerGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,60 @@ public class MainActivity extends AppCompatActivity {
         devicesHolder.setHasFixedSize(true);
         linearLayout.setBackgroundColor(Color.BLACK);
 
+        controllerGroup=(LinearLayout)findViewById(R.id.controllerContainer);
+        controllerGroup.setVisibility(View.GONE);
+        seekBarR=(SeekBar)findViewById(R.id.skbR);
+        seekBarG=(SeekBar)findViewById(R.id.skbG);
+        seekBarB=(SeekBar)findViewById(R.id.skbB);
+
+        seekBarR.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                controller(progress,seekBarG.getProgress(),seekBarB.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        seekBarG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                controller(seekBarR.getProgress(),progress,seekBarB.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        seekBarB.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                controller(seekBarR.getProgress(),seekBarG.getProgress(),progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         searchbtn=(Button)findViewById(R.id.search_device);
         searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,10 +136,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         controllerbtn=(Button)findViewById(R.id.on_off);
+        controllerbtn.setVisibility(View.GONE);
         controllerbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                controller();
+                if(controllerGroup.getVisibility()==View.GONE){
+                    controllerGroup.setVisibility(View.VISIBLE);
+                }
+                else {
+                    controllerGroup.setVisibility(View.GONE);
+                }
+
             }
         });
 
@@ -131,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
                     } else if (info.groupFormed) {
                         controllerbtn.setVisibility(View.VISIBLE);
                         linearLayout.setVisibility(View.GONE);
+                        controllerbtn.setVisibility(View.VISIBLE);
                         ((TextView) MainActivity.this.findViewById(R.id.server_client)).setText("Client");
                     }
 
@@ -172,8 +235,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void controller(){
-        new Client(mInfo,getApplicationContext()).execute();
+    public void controller(int r,int g, int b){
+        new Client(mInfo,getApplicationContext(),r,g,b).execute();
     }
 
 
@@ -198,40 +261,27 @@ public class MainActivity extends AppCompatActivity {
             if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
                 // Check to see if Wi-Fi is enabled and notify appropriate activity
                 Log.d(TAG, "onReceive: WIFI_P2P_STATE_CHANGED_ACTION ");
-                //判断是否支持 wifi点对点传输
             } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
                 // Call WifiP2pManager.requestPeers() to get a list of current peers
-                //查找到设备列表
-
                 Log.d(TAG, "onReceive: WIFI_P2P_PEERS_CHANGED_ACTION ");
-
                 if (mManager != null) {
-
                     mManager.requestPeers(mChannel, peerListListener);
                 }
-
             } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
                 // Respond to new connection or disconnections
-                //获取到连接状态改变的详细信息
-
                 Log.d(TAG, "onReceive: WIFI_P2P_CONNECTION_CHANGED_ACTION");
                 if (mManager == null) {
                     return;
                 }
-
                 NetworkInfo networkInfo = intent
                         .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-
                 if (networkInfo.isConnected()) {
-
                     // we are connected with the other device, request connection
                     // info to find group owner IP
-
                     Log.d(TAG, "onReceive: isConnected");
                     mManager.requestConnectionInfo(mChannel, myConnectionInfoListener);
                     progressDialog.dismiss();
                     Toast.makeText(getApplicationContext(),"Peer Connected!",Toast.LENGTH_SHORT).show();
-
                 } else {
                     // It's a disconnect
                     Log.d(TAG, "onReceive: disconnect");
@@ -239,7 +289,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
                 // Respond to this device's wifi state changing
-                //自身设备信息改变
 
                 Log.d(TAG, "onReceive: WIFI_P2P_THIS_DEVICE_CHANGED_ACTION");
             }

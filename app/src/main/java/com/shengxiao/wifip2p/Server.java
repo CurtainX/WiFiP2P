@@ -19,6 +19,7 @@ public class Server extends AsyncTask<Void,Void,String> {
     String out;
     Context context;
     private String TAG="Log";
+    int r=0,b=0,g=0;
 
     public Server(Context context) {
         this.context = context;
@@ -38,8 +39,9 @@ public class Server extends AsyncTask<Void,Void,String> {
                 Log.d("Log",remoteSocketAddress.toString());
 
                 DataInputStream datainputstream =new DataInputStream(client.getInputStream());
-                out=datainputstream.readInt()+"";
-                MainActivity.serverout=out;
+                r=datainputstream.readInt();
+                g=datainputstream.readInt();
+                b=datainputstream.readInt();
                 datainputstream.close();
                 serverSocket.close();
                 Log.d("Log",out+"");
@@ -54,17 +56,7 @@ public class Server extends AsyncTask<Void,Void,String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        if(MainActivity.colorCode==0){
-            MainActivity.linearLayout.setBackgroundColor(Color.BLACK);
-            MainActivity.colorCode=1;
-        }
-        else {
-            MainActivity.linearLayout.setBackgroundColor(Color.YELLOW);
-            MainActivity.linearLayout.animate();
-            MainActivity.colorCode=0;
-
-        }
-        Log.d("Log","Serverout--->"+MainActivity.serverout);
+            MainActivity.linearLayout.setBackgroundColor(Color.rgb(r,g,b));
         new Server(context).execute();
     }
 }

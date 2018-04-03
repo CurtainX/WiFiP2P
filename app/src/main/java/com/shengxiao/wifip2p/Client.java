@@ -21,11 +21,15 @@ public class Client extends AsyncTask<Void,Void,String> {
     Socket socket;
     Context context;
     private String TAG="Log";
+    int r,g,b;
 
-    public Client(WifiP2pInfo wifiP2pInfo,Context context) {
+    public Client(WifiP2pInfo wifiP2pInfo,Context context,int r,int g,int b) {
         this.wifiP2pInfo=wifiP2pInfo;
         socket = new Socket();
         this.context=context;
+        this.r=r;
+        this.g=g;
+        this.b=b;
     }
 
     @Override
@@ -48,7 +52,9 @@ public class Client extends AsyncTask<Void,Void,String> {
              */
             OutputStream outputStream = socket.getOutputStream();
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-            dos.writeInt(1);
+            dos.writeInt(r);
+            dos.writeInt(g);
+            dos.writeInt(b);
             dos.flush();
             outputStream.close();
             dos.close();
